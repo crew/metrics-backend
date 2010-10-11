@@ -1,0 +1,9 @@
+== Lab Metrics Backend ==
+
+Dependencies:
+
+* MongoDB (NOTE: the mongodb package in the repository doesn't work properly with Ubuntu.  Follow these steps instead: http://www.crashcourse.ca/content/getting-started-mongodb-under-ubuntu )
+  ** ALSO: you must create the data directory:
+     $ sudo mkdir -p /data/db/
+     $ sudo chown `id -u` /data/db
+* PyMongo (see directions here: http://api.mongodb.org/python/1.9%2B/installation.html )
