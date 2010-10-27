@@ -1,0 +1,18 @@
+#!/bin/bash
+echo "Generating test key & certificate.  Answer the prompts."
+echo "Files test.key and test.crt will be created."
+echo "Generating key..."
+echo "----------------------------------------"
+openssl genrsa -des3 -out test.key 1024
+echo "Generating CSR..."
+echo "----------------------------------------"
+openssl req -new -key test.key -out test.csr
+echo "Removing passphrase..."
+echo "----------------------------------------"
+cp test.key test.key.org
+openssl rsa -in test.key.org -out test.key
+echo "Generating certificate (good for 365 days)..."
+echo "----------------------------------------"
+openssl x509 -req -days 365 -in test.csr -signkey test.key -out test.crt
+echo "----------------------------------------"
+echo "Done."
