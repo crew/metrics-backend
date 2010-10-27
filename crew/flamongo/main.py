@@ -47,6 +47,6 @@ if __name__ == '__main__':
         from twisted.internet import ssl
         ssl_context = ssl.DefaultOpenSSLContextFactory('test.key', 'test.crt')
         reactor.listenSSL(2443, site, ssl_context)
-    except:
-        log.err('SSL not enabled. Needs PyOpenSSL.')
+    except Exception as ex:
+        log.err('SSL not enabled. Needs PyOpenSSL.  Error: {0}'.format(ex))
     reactor.run()
