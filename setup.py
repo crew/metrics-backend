@@ -1,23 +1,14 @@
 #!/usr/bin/env python
-from setuptools import setup, find_packages
+from distutils.core import setup
 
 
 setup(
-    name = 'crew.metrics.backend',
+    name = 'crew.flamongo',
     version = '0.1',
-    packages = find_packages(),
+    packages = ['crew', 'crew.flamongo'],
     author = 'Crew',
     author_email = 'crew@ccs.neu.edu',
-    description = 'Crew Metrics Backend',
+    description = 'Crew Flamongo',
     keywords = 'crew',
-    entry_points = {
-        'console_scripts': [
-            'flamongo = crew.flamongo.main:main',
-        ],
-    },
-    install_requires = [
-        'pymongo >= 1.9',
-        'Twisted >= 10.1',
-        'pyopenssl',
-    ],
+    scripts = ['scripts/flamongo'],
 )
