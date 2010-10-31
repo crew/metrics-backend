@@ -3,3 +3,6 @@
 *~
 doc/build
 build
+*.egg-info
+*.key.org
+dist

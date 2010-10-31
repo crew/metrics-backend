@@ -38,7 +38,7 @@ class TopLevel(Resource):
             return RetrieveResource(self.get_conn())
 
 
-if __name__ == '__main__':
+def main():
     import sys
     log.startLogging(sys.stderr)
     site = server.Site(TopLevel(lambda: Connection()))
@@ -50,3 +50,7 @@ if __name__ == '__main__':
     except Exception as ex:
         log.err('SSL not enabled. Needs PyOpenSSL.  Error: {0}'.format(ex))
     reactor.run()
+
+
+if __name__ == '__main__':
+    main()

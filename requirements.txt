@@ -1,2 +1,3 @@
 twisted
 pyopenssl
+pymongo>=1.9
