@@ -5,6 +5,17 @@ from twisted.python import log
 from store import StoreResource
 from retrieve import RetrieveResource
 from pymongo.connection import Connection
+import gflags
+
+
+FLAGS = gflags.FLAGS
+gflags.DEFINE_integer('port', 2000, 'The port number')
+gflags.DEFINE_integer('secureport', 2443, 'The secure port number')
+gflags.DEFINE_string('privatekey', 'test.key', 'The location of the private '
+    'key for SSL')
+gflags.DEFINE_string('certificate', 'test.crt', 'The location of the SSL '
+    'certificate.')
+gflags.DEFINE_string('logfile', None, 'The filename of the log.')
 
 
 class TopLevel(Resource):
@@ -38,19 +49,27 @@ class TopLevel(Resource):
             return RetrieveResource(self.get_conn())
 
 
-def main():
-    import sys
-    log.startLogging(sys.stderr)
+def main(argv):
+    FLAGS(argv)
+    if not FLAGS.logfile:
+        import sys
+        log.startLogging(sys.stderr)
+    else:
+        f = open(FLAGS.logfile, 'a')
+        log.startLogging(f)
+    # TODO define connection options.
     site = server.Site(TopLevel(lambda: Connection()))
-    reactor.listenTCP(2000, site)
+    reactor.listenTCP(FLAGS.port, site)
     try:
         from twisted.internet import ssl
-        ssl_context = ssl.DefaultOpenSSLContextFactory('test.key', 'test.crt')
-        reactor.listenSSL(2443, site, ssl_context)
+        ssl_context = ssl.DefaultOpenSSLContextFactory(FLAGS.privatekey,
+            FLAGS.certificate)
+        reactor.listenSSL(FLAGS.secureport, site, ssl_context)
     except Exception as ex:
         log.err('SSL not enabled. Needs PyOpenSSL.  Error: {0}'.format(ex))
     reactor.run()
 
 
 if __name__ == '__main__':
-    main()
+    import sys
+    main(sys.argv)

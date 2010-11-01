@@ -7,3 +7,7 @@ Dependencies:
      $ sudo mkdir -p /data/db/
      $ sudo chown `id -u` /data/db
 * PyMongo (see directions here: http://api.mongodb.org/python/1.9%2B/installation.html )
+* python-gflags
+* Twisted (with pyopenssl for SSL)
+
+See https://wiki.ccs.neu.edu/display/Crew/Python+Development

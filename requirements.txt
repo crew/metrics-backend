@@ -1,3 +1,4 @@
 twisted
 pyopenssl
 pymongo>=1.9
+python-gflags>=1.4
