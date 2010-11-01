@@ -6,3 +6,6 @@ build
 *.egg-info
 *.key.org
 dist
+*.crt
+*.csr
+*.key
