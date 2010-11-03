@@ -67,6 +67,7 @@ def main(argv):
         reactor.listenSSL(FLAGS.secureport, site, ssl_context)
     except Exception as ex:
         log.err('SSL not enabled. Needs PyOpenSSL.  Error: {0}'.format(ex))
+    # TODO Daemonizer
     reactor.run()
 
 

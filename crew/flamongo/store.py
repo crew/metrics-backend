@@ -3,6 +3,7 @@ import json
 from resources import MongoResource
 import pymongo
 import uuid
+from datetime import datetime
 
 
 class StoreResource(MongoResource):
@@ -21,7 +22,9 @@ class StoreResource(MongoResource):
         if not coll.ensure_index('timestamp'):
             coll.create_index('timestamp', pymongo.ASCENDING)
         try:
-            oid = coll.insert(data)
+            # XXX More data validation?
+            data['timestamp'] = datetime.utcfromtimestamp(data['timestamp'])
+            oid = coll.insert(data, safe=True)
             log.msg('Created: %s' % oid)
             return '{"code":201}'
         except Exception, e:
