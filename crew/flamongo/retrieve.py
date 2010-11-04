@@ -42,9 +42,11 @@ class RetrieveResource(MongoResource):
         fields = None
         if data.has_key('fields'):
             fields = data['fields']
-            # Check for the field timestamp if the fields is not empty.
-            if 'timestamp' not in fields and fields:
+            if 'timestamp' not in fields:
                 fields.append('timestamp')
+            # Check that 'timestamp' is not the only field
+            if len(fields) == 1 and 'timestamp' in fields:
+                fields = None
         q_filter = {}
         for k, v in data.iteritems():
             if isinstance(v, basestring):
