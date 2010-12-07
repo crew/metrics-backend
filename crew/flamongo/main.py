@@ -1,3 +1,5 @@
+import sys
+import tempfile
 from twisted.web import server
 from twisted.web.resource import Resource
 from twisted.internet import reactor
@@ -5,6 +7,7 @@ from twisted.python import log
 from store import StoreResource
 from retrieve import RetrieveResource
 from pymongo.connection import Connection
+import utils
 import gflags
 
 
@@ -16,6 +19,7 @@ gflags.DEFINE_string('privatekey', 'test.key', 'The location of the private '
 gflags.DEFINE_string('certificate', 'test.crt', 'The location of the SSL '
     'certificate.')
 gflags.DEFINE_string('logfile', None, 'The filename of the log.')
+gflags.DEFINE_boolean('daemonize', False, 'Daemonize.')
 
 
 class TopLevel(Resource):
@@ -51,9 +55,14 @@ class TopLevel(Resource):
 
 def main(argv):
     FLAGS(argv)
-    if not FLAGS.logfile:
-        import sys
+    if not FLAGS.logfile and not FLAGS.daemonize:
+        # No log file and not daemonized.
         log.startLogging(sys.stderr)
+    elif FLAGS.daemonize:
+        # Daemonized, but no log file.
+        fd, name = tempfile.mkstemp(prefix='flamongo', suffix='.log')
+        sys.stderr.write('Logging to %s\n' % name)
+        log.startLogging(open(name, 'a'))
     else:
         f = open(FLAGS.logfile, 'a')
         log.startLogging(f)
@@ -67,10 +76,10 @@ def main(argv):
         reactor.listenSSL(FLAGS.secureport, site, ssl_context)
     except Exception as ex:
         log.err('SSL not enabled. Needs PyOpenSSL.  Error: {0}'.format(ex))
-    # TODO Daemonizer
+    if FLAGS.daemonize:
+        utils.daemonize()
     reactor.run()
 
 
 if __name__ == '__main__':
-    import sys
     main(sys.argv)
