@@ -6,6 +6,7 @@ from twisted.internet import reactor
 from twisted.python import log
 from store import StoreResource
 from retrieve import RetrieveResource
+from retrieve_last import RetrieveLastResource
 from pymongo.connection import Connection
 import utils
 import gflags
@@ -51,6 +52,8 @@ class TopLevel(Resource):
             return StoreResource(self.get_conn())
         elif path == 'retrieve':
             return RetrieveResource(self.get_conn())
+        elif path == 'retrieve-last':
+            return RetrieveLastResource(self.get_conn())
 
 
 def main(argv):
