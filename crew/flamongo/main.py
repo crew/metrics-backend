@@ -61,9 +61,10 @@ def main(argv):
     if not FLAGS.logfile and not FLAGS.daemonize:
         # No log file and not daemonized.
         log.startLogging(sys.stderr)
-    elif FLAGS.daemonize:
+    elif not FLAGS.logfile and FLAGS.daemonize:
         # Daemonized, but no log file.
         fd, name = tempfile.mkstemp(prefix='flamongo', suffix='.log')
+        os.close(fd)
         sys.stderr.write('Logging to %s\n' % name)
         log.startLogging(open(name, 'a'))
     else:
@@ -77,8 +78,12 @@ def main(argv):
         ssl_context = ssl.DefaultOpenSSLContextFactory(FLAGS.privatekey,
             FLAGS.certificate)
         reactor.listenSSL(FLAGS.secureport, site, ssl_context)
+    except ImportError:
+        # removes the partial import.
+        ssl = None
+        log.err('SSL not enabled. Needs PyOpenSSL.')
     except Exception as ex:
-        log.err('SSL not enabled. Needs PyOpenSSL.  Error: {0}'.format(ex))
+        log.err(str(ex))
     if FLAGS.daemonize:
         utils.daemonize()
     reactor.run()
