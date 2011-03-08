@@ -23,7 +23,7 @@ class RetrieveResource(MongoResource):
                 fields = None
         q_filter = {}
         for k, v in data.iteritems():
-            if isinstance(v, basestring):
+            if k not in ('fields', 'timestamp', 'start_time', 'end_time', 'interval'):
                 q_filter[k] = v
         # Add the start and end datetimes. $lt -> "<" and $gte -> ">="
         # start_time <= [...] < end_time
