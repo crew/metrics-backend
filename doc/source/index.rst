@@ -11,6 +11,10 @@ Contents:
 .. toctree::
     :maxdepth: 2
 
+    flamongo
+    flamongo-key
+    models
+
 Indices and tables
 ==================
 
