@@ -1,8 +1,8 @@
-from twisted.python import log
 import json
-from resources import MongoResource
-import pymongo
 import uuid
+import pymongo
+from twisted.python import log
+from resources import MongoResource
 from datetime import datetime
 
 
@@ -18,6 +18,9 @@ class StoreResource(MongoResource):
             apikey, namespace, data = self.split_data(data)
         except:
             return '{"code":400,"error":"Bad request."}'
+        if not self.has_write_access(namespace, apikey):
+            # XXX
+            return '{"code":403,"error":"Unauthorized."}'
         coll = self.get_collection(namespace)
         if not coll.ensure_index('timestamp'):
             coll.create_index('timestamp', pymongo.ASCENDING)

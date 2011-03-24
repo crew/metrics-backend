@@ -10,5 +10,5 @@ setup(
     author_email = 'crew@ccs.neu.edu',
     description = 'Crew Flamongo',
     keywords = 'crew',
-    scripts = ['scripts/flamongo'],
+    scripts = ['scripts/flamongo', 'scripts/flamongo-key'],
 )

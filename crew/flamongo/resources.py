@@ -1,9 +1,10 @@
+import json
+import time
+from models import ApiKey, Namespace
 from twisted.web.resource import Resource
 from twisted.python import log
 from pymongo.database import Database
 from pymongo.collection import Collection
-import json
-import time
 
 
 class JSONResource(Resource):
@@ -66,6 +67,9 @@ class MongoResource(JSONResource):
 
     @classmethod
     def db_name(cls, namespace):
+        # FIXME
+        # ns = Namespace.objects.get(name=namespace)
+        # return ns.database
         return 'test'
 
     @classmethod
@@ -80,6 +84,16 @@ class MongoResource(JSONResource):
             log.err('Malformed request %s' % data)
             raise
         return apikey, namespace, data
+
+    @classmethod
+    def has_read_access(cls, namespace, apikey):
+        return True
+
+    @classmethod
+    def has_write_access(cls, namespace, apikey):
+        a = ApiKey.find(namespace, apikey)
+        if a:
+            return a.has_write
 
     def get_collection(self, namespace):
         db = Database(self.conn, self.db_name(namespace))

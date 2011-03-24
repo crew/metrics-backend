@@ -1,4 +1,5 @@
 twisted
 pyopenssl
 pymongo>=1.9
+mongoengine>=0.4
 python-gflags>=1.4

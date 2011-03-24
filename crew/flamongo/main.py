@@ -8,6 +8,7 @@ from store import StoreResource
 from retrieve import RetrieveResource
 from retrieve_last import RetrieveLastResource
 from pymongo.connection import Connection
+import mongoengine
 import utils
 import gflags
 
@@ -70,6 +71,8 @@ def main(argv):
     else:
         f = open(FLAGS.logfile, 'a')
         log.startLogging(f)
+    # FIXME
+    mongoengine.connect('flamongo')
     # TODO define connection options.
     site = server.Site(TopLevel(lambda: Connection()))
     reactor.listenTCP(FLAGS.port, site)

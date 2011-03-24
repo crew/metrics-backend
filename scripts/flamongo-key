@@ -1,0 +1,60 @@
+#!/usr/bin/env python
+import sys
+import gflags
+import mongoengine
+from crew.flamongo.models import ApiKey, Namespace
+
+
+gflags.DEFINE_string('namespace', None, 'Namespace name.')
+gflags.DEFINE_boolean('create-namespace', False, 'Create the '
+    'given namespace.')
+gflags.DEFINE_string('database', None, 'The database name, (for '
+    'namespace creation.')
+gflags.DEFINE_boolean('list', False, 'List all apikeys associated '
+    'with the namespace.')
+gflags.DEFINE_enum('create', None, ('r', 'rw', 'w'), 'Create an '
+    'api key with the given access.')
+gflags.DEFINE_string('delete', None, 'Delete the given apikey')
+gflags.MarkFlagAsRequired('namespace')
+
+FLAGS = gflags.FLAGS
+
+
+def main():
+    mongoengine.connect('flamongo')
+    ns = FLAGS.namespace
+    if getattr(FLAGS, 'create-namespace'):
+        db = FLAGS.database
+        if not db:
+            raise Exception('database name is required.')
+        ns = Namespace(name=ns, database=db)
+        ns.save(safe=True)
+        return 0
+    ns = Namespace.objects.get(name=ns)
+    if FLAGS.list:
+        apikeys = list(ns.apikeys)
+        if len(apikeys) == 0:
+            sys.stderr.write('No keys!\n')
+            return 1
+        for apikey in ns.apikeys:
+            sys.stdout.write('%s\t%s\n' % (apikey.value, apikey.access))
+        return 0
+    if FLAGS.create:
+        access = FLAGS.create
+        a = ApiKey.create(ns, access)
+        a.save(safe=True)
+        return 0
+    if FLAGS.delete:
+        apikey = FLAGS.delete
+        for a in ns.apikeys:
+            if a.value == apikey:
+                a.delete(safe=True)
+                return 0
+        sys.stderr.write('Unable to find: %s\n' % apikey)
+        return 1
+    return 0
+
+
+if __name__ == '__main__':
+    FLAGS(sys.argv)
+    sys.exit(int(main()))
