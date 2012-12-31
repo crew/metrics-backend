@@ -3,7 +3,7 @@ from twisted.internet import defer
 import json
 import uuid
 from resources import MongoResource
-from pymongo.objectid import ObjectId
+from bson.objectid import ObjectId
 from pymongo.cursor import Cursor
 import time
 from datetime import datetime
